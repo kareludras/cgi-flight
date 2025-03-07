@@ -25,16 +25,6 @@ public class SeatService {
         return seatRepository.findByFlightId(flightId);
     }
 
-    /**
-     * Primary seat recommendation system that provides personalized seat suggestions
-     * based on passenger preferences.
-     *
-     * @param flightId Flight ID to search seats for
-     * @param quantity Number of seats needed
-     * @param preferences Map of preference keys to their importance (0-10 scale)
-     * @param mustBeAdjacent Whether seats must be adjacent
-     * @return List of recommended seats, ordered by best match first
-     */
     public List<Seat> getRecommendedSeats(Long flightId,
                                           int quantity,
                                           Map<String, Integer> preferences,
@@ -44,18 +34,16 @@ public class SeatService {
                 .collect(Collectors.toList());
 
         if (availableSeats.size() < quantity) {
-            return List.of(); // Not enough seats available
+            return List.of();
         }
 
-        // If we need adjacent seats, find them first
         if (mustBeAdjacent && quantity > 1) {
             List<List<Seat>> adjacentGroups = findAllAdjacentGroups(availableSeats, quantity);
 
             if (adjacentGroups.isEmpty()) {
-                return List.of(); // No adjacent seat groups available
+                return List.of();
             }
 
-            // Score each group and return the best one
             Map<List<Seat>, Integer> groupScores = new HashMap<>();
             for (List<Seat> group : adjacentGroups) {
                 int groupScore = group.stream()
@@ -69,7 +57,6 @@ public class SeatService {
                     .map(Map.Entry::getKey)
                     .orElse(List.of());
         } else {
-            // For non-adjacent seats, simply score and return the best individual seats
             return availableSeats.stream()
                     .sorted(Comparator.comparingInt(seat -> -calculateSeatScore(seat, preferences)))
                     .limit(quantity)
@@ -77,91 +64,61 @@ public class SeatService {
         }
     }
 
-    /**
-     * Calculate a score for a seat based on how well it matches the provided preferences.
-     * Higher scores mean better matches.
-     */
     private int calculateSeatScore(Seat seat, Map<String, Integer> preferences) {
         int score = 0;
-
-        // Base score - all available seats start with some points
         score += 10;
-
-        // Window preference
         if (preferences.containsKey("window")) {
             char col = seat.getSeatNumber().charAt(seat.getSeatNumber().length() - 1);
             boolean isWindow = (col == 'A' || col == 'F');
-
             if (isWindow) {
                 score += preferences.get("window");
             }
         }
-
-        // Aisle preference
         if (preferences.containsKey("aisle")) {
             char col = seat.getSeatNumber().charAt(seat.getSeatNumber().length() - 1);
             boolean isAisle = (col == 'C' || col == 'D');
-
             if (isAisle) {
                 score += preferences.get("aisle");
             }
         }
-
-        // Extra legroom preference
-        if (preferences.containsKey("legroom") && "EXTRA_LEGROOM".equalsIgnoreCase(seat.getSeatType())) {
+        if (preferences.containsKey("legroom") && seat.getSeatType().toUpperCase().contains("EXTRA_LEGROOM")) {
             score += preferences.get("legroom");
         }
-
-        // Exit row preference
-        if (preferences.containsKey("exit_row") && "EXIT_ROW".equalsIgnoreCase(seat.getSeatType())) {
+        if (preferences.containsKey("exit_row") && seat.getSeatType().toUpperCase().contains("EXIT_ROW")) {
             score += preferences.get("exit_row");
         }
-
-        // Front of plane preference (lower row number = front of plane)
         if (preferences.containsKey("front")) {
             int row = parseRow(seat);
-            int maxRow = 50; // Assuming a standard plane configuration
+            int maxRow = 50;
             score += preferences.get("front") * (maxRow - row) / maxRow;
         }
-
-        // Back of plane preference
         if (preferences.containsKey("back")) {
             int row = parseRow(seat);
-            int maxRow = 50; // Assuming a standard plane configuration
+            int maxRow = 50;
             score += preferences.get("back") * row / maxRow;
         }
-
         return score;
     }
 
-    /**
-     * Legacy method maintained for backward compatibility
-     */
     public List<Seat> recommendSeats(Long flightId,
                                      int quantity,
                                      boolean windowPref,
                                      boolean legroomPref,
                                      boolean exitRowPref,
                                      boolean adjacent) {
-        // Convert to new preference-based system
         Map<String, Integer> preferences = new HashMap<>();
         if (windowPref) preferences.put("window", 8);
         if (legroomPref) preferences.put("legroom", 8);
         if (exitRowPref) preferences.put("exit_row", 8);
-
         return getRecommendedSeats(flightId, quantity, preferences, adjacent);
     }
 
-    /**
-     * BOOK SEATS: mark them as occupied and as user booked.
-     */
     public BookingResult bookSeats(Long flightId, List<Long> seatIds) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found: " + flightId));
 
         List<Seat> seatsToBook = seatRepository.findAllById(seatIds);
 
-        // Validation checks
         for (Seat seat : seatsToBook) {
             if (!seat.getFlight().getId().equals(flightId)) {
                 throw new RuntimeException("Seat " + seat.getId() + " does not belong to flight " + flightId);
@@ -171,7 +128,6 @@ public class SeatService {
             }
         }
 
-        // Book the seats
         for (Seat seat : seatsToBook) {
             seat.setOccupied(true);
             seat.setUserBooked(true);
@@ -203,17 +159,11 @@ public class SeatService {
         );
     }
 
-    /**
-     * Cancel booking for a given flight.
-     * This method finds all seats for the flight that are marked as occupied and userBooked,
-     * then marks them as unoccupied and resets the userBooked flag.
-     */
     public void cancelBookingForFlight(Long flightId) {
         List<Seat> seatsToCancel = seatRepository.findAll().stream()
                 .filter(seat -> seat.isOccupied() && seat.isUserBooked() &&
                         seat.getFlight().getId().equals(flightId))
                 .toList();
-
         for (Seat seat : seatsToCancel) {
             seat.setOccupied(false);
             seat.setUserBooked(false);
@@ -221,34 +171,26 @@ public class SeatService {
         }
     }
 
-    /**
-     * Return bookings only for seats that were booked by a user.
-     */
     public List<BookingResult> getAllBookedFlights() {
         List<Seat> occupiedSeats = seatRepository.findAll().stream()
                 .filter(seat -> seat.isOccupied() && seat.isUserBooked())
                 .toList();
-
         Map<Flight, List<Seat>> seatsByFlight = occupiedSeats.stream()
                 .collect(Collectors.groupingBy(Seat::getFlight));
-
         List<BookingResult> results = new ArrayList<>();
         for (Map.Entry<Flight, List<Seat>> entry : seatsByFlight.entrySet()) {
             Flight flight = entry.getKey();
             List<Seat> seatsForFlight = entry.getValue();
-
             List<String> seatNumbers = seatsForFlight.stream()
                     .map(Seat::getSeatNumber)
                     .sorted()
                     .toList();
-
             String depTime = (flight.getDepartureTime() != null)
                     ? flight.getDepartureTime().toString()
                     : "N/A";
             String arrTime = (flight.getArrivalTime() != null)
                     ? flight.getArrivalTime().toString()
                     : "N/A";
-
             BookingResult booking = new BookingResult(
                     flight.getId(),
                     flight.getDepartureCity(),
@@ -265,19 +207,13 @@ public class SeatService {
         return results;
     }
 
-    /**
-     * Finds all possible adjacent seat groups of the requested size.
-     */
     private List<List<Seat>> findAllAdjacentGroups(List<Seat> availableSeats, int quantity) {
         List<List<Seat>> adjacentGroups = new ArrayList<>();
-
-        Map<Integer, List<Seat>> seatsByRow = availableSeats.stream()
+        var seatsByRow = availableSeats.stream()
                 .collect(Collectors.groupingBy(this::parseRow));
-
-        for (Map.Entry<Integer, List<Seat>> entry : seatsByRow.entrySet()) {
+        for (var entry : seatsByRow.entrySet()) {
             List<Seat> rowSeats = entry.getValue();
             rowSeats.sort(Comparator.comparingInt(this::parseColumn));
-
             for (int start = 0; start <= rowSeats.size() - quantity; start++) {
                 boolean isConsecutive = true;
                 for (int i = 0; i < quantity - 1; i++) {
@@ -294,24 +230,6 @@ public class SeatService {
             }
         }
         return adjacentGroups;
-    }
-
-    /**
-     * Finds a single block of adjacent seats (legacy method).
-     */
-    private List<Seat> findAdjacentBlock(List<Seat> seats, int quantity) {
-        Map<Integer, List<Seat>> seatsByRow = seats.stream()
-                .collect(Collectors.groupingBy(this::parseRow));
-
-        for (Map.Entry<Integer, List<Seat>> entry : seatsByRow.entrySet()) {
-            List<Seat> rowSeats = entry.getValue();
-            rowSeats.sort(Comparator.comparingInt(this::parseColumn));
-            List<Seat> consecutive = consecutiveSeats(rowSeats, quantity);
-            if (!consecutive.isEmpty()) {
-                return consecutive;
-            }
-        }
-        return List.of();
     }
 
     private List<Seat> consecutiveSeats(List<Seat> rowSeats, int quantity) {

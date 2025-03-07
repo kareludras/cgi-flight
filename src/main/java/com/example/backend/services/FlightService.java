@@ -4,6 +4,7 @@ import com.example.backend.models.Flight;
 import com.example.backend.repositories.FlightRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,8 +70,14 @@ public class FlightService {
                     if (flightTime == null || flightTime.isEmpty()) {
                         return true;
                     }
-                    String timePart = f.getDepartureTime().toLocalTime().toString().substring(0, 5);
-                    return timePart.equals(flightTime);
+                    try {
+                        LocalTime selectedTime = LocalTime.parse(flightTime);
+                        LocalTime flightDepTime = f.getDepartureTime().toLocalTime();
+                        return !flightDepTime.isBefore(selectedTime.minusHours(1)) &&
+                                !flightDepTime.isAfter(selectedTime.plusHours(1));
+                    } catch (Exception e) {
+                        return false;
+                    }
                 })
                 .filter(f -> f.getPrice() <= maxP)
                 .toList();
