@@ -98,7 +98,6 @@ public class Flight {
         this.destinationCity = destinationCity;
     }
 
-    // Add these new methods for formatted dates
     @JsonProperty("formattedDepartureTime")
     public String getFormattedDepartureTime() {
         if (departureTime == null) {
@@ -121,13 +120,11 @@ public class Flight {
             return "";
         }
 
-        // If same day, only show date once
         if (departureTime.toLocalDate().equals(arrivalTime.toLocalDate())) {
             return departureTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy | HH:mm")) +
                     " - " +
                     arrivalTime.format(DateTimeFormatter.ofPattern("HH:mm"));
         } else {
-            // Different days, show both dates
             return getFormattedDepartureTime() + " - " + getFormattedArrivalTime();
         }
     }
