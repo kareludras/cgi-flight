@@ -70,3 +70,9 @@ npm start
 ```
 
 5. Seejärel on veebirakendus leitav järgnevalt lingilt: [http://localhost:3000](http://localhost:3000).
+
+# Tööga seotud asjaolud
+
+### Kulunud aeg: 18h
+
+### Lennuk, millel kohti saab planeerida on Boeing 787-800 standardi järgi, kuid kohtade asetus on natuke erinev. Ülesandes olevad nõuded said kõik täidetud ning usun, et oleks veel palju, mida saaks paremaks teha, kuid sellisele veebirakendusele võibki jääda uusi lisasid arendama, seega usun, et proovitööks on see piisav. Samuti eeldasin, et exit row tähendab seda, et istekoht on päris väljapääsu juures ning lisasin mõlemas suunas 3 lähimat rida, sest sealt on garanteeritud kiire lennukis välja pääsemine.
