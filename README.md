@@ -75,4 +75,19 @@ npm start
 
 ### Kulunud aeg: 18h
 
-### Lennuk, millel kohti saab planeerida on Boeing 787-800 standardi järgi, kuid kohtade asetus on natuke erinev. Ülesandes olevad nõuded said kõik täidetud ning usun, et oleks veel palju, mida saaks paremaks teha, kuid sellisele veebirakendusele võibki jääda uusi lisasid arendama, seega usun, et proovitööks on see piisav. Samuti eeldasin, et exit row tähendab seda, et istekoht on päris väljapääsu juures ning lisasin mõlemas suunas 3 lähimat rida, sest sealt on garanteeritud kiire lennukis välja pääsemine.
+### Lennuk, millel kohti saab planeerida on Boeing 787-800 standardi järgi, kuid kohtade asetus on natuke erinev. Ülesandes olevad nõuded said kõik täidetud ning usun, et oleks veel palju, mida saaks paremaks teha, kuid sellisele veebirakendusele võibki jääda uusi lisasid arendama, seega usun, et proovitööks on see piisav. Samuti eeldasin, et exit row tähendab seda, et istekoht on päris väljapääsu juures ning lisasin mõlemas suunas 3 lähimat rida, sest sealt on garanteeritud kiire lennukis välja pääsemine. Ühtlasi ei loonud ma logini kuigi see võiks olemas olla ning samuti ei loonud ma headerit ega footerit, sest see ei tundunud nagu aja hea ära kasutamine. Veebirakendus on samuti loodud töötama enimkasutatud seadmetel nagu arvuti brauserid ja nutitelefoni brauserid.
+
+### Asjad mida oleks saanud paremini teha olid tihedamini commitida. Kuna ma ei kasutanud issue trackerit, siis ei tekkinud ka otsest vajadust midagi commitida ning üks hetk oli projekt valmis. Ilmselt oleks issue trackeri kasutamine kasulik olnud ning oleks isegi vähem aega võtnud, jagades suuremad komponendid väiksemateks osadeks. Antud hetkel arendasin reeglina komponendi korraga ning ei mõelnud läbi, mida ma selleks tegema pean ning raiskasin selle peale aega. Samuti kui oleks teinud sisselogimise ja kasutajad, siis oleks olnud üsna lihtne veebirakendus github pages lehele üles panna ning see oleks veel lihtsam võimalus proovitööd esitada kui Dockeri image.
+
+# All on väljatoodud ka mõned pildid veebirakendusest.
+
+![main page](images/main_page.jpg)
+
+![seat selection](images/seat_selection.jpg)
+
+![main page phone](images/main_page_phone.jpg)
+
+![seat selection phone](images/seat_selection_phone.jpg)
+
+![my bookings phone](images/mybookings_phone.jpg)
+
