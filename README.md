@@ -9,9 +9,11 @@
 | Andmebaas               | H2          |
 | Project Object Model    | Maven    |
 | Konteineriseerimine     | Docker    |
-| Versioonihaldus     | Git    |
+| Versioonihaldus         | Git    |
 
 ## Õpetus veebirakenduse jooksutamiseks
+
+### Kui esineb probleeme veebirakenduse jooksutamisega, siis palun võtta ühendust järgmisel emaili aadressil: udras.karel@gmail.com
 
 ### 1.
 
