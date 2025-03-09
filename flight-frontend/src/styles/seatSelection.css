@@ -1,42 +1,50 @@
 .seat-selection-container {
     background-color: rgba(255, 255, 255, 0.9);
-    max-width: 800px;
+    max-width: 900px;
     margin: 20px auto;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
+
 .seat-selection-container h2 {
     margin-top: 0;
     margin-bottom: 16px;
     font-size: 1.8rem;
     font-weight: 600;
 }
+
 .error-message {
     color: red;
     margin-bottom: 16px;
     font-weight: 500;
 }
+
 .seat-preferences {
     display: flex;
     flex-direction: column;
     gap: 16px;
     margin-bottom: 20px;
 }
+
 .pref-field {
     display: flex;
     align-items: center;
 }
+
 .pref-field label {
     margin-right: 8px;
     font-size: 0.95rem;
 }
+
 .checkbox-field {
     margin-top: 4px;
 }
+
 .checkbox-field input {
     margin-right: 6px;
 }
+
 .pref-badge-xl,
 .pref-badge-ex {
     font-size: 8px;
@@ -45,30 +53,38 @@
     color: #fff;
     border-radius: 2px;
 }
+
 .pref-badge-xl {
     background: #f39c12;
 }
+
 .pref-badge-ex {
     background: #e74c3c;
 }
+
 .button-row {
     margin-top: 20px;
     text-align: center;
 }
+
 .button-row .btn {
     margin-right: 10px;
 }
+
 .seat-map-section {
     margin-bottom: 20px;
 }
+
 .seat-map-title {
     margin-bottom: 10px;
     font-size: 1.4rem;
     font-weight: 600;
 }
+
+
 .seat-map-container {
     display: grid;
-    grid-template-columns: repeat(6, 50px);
+    grid-template-columns: repeat(3, 50px) 20px repeat(3, 50px);
     grid-auto-rows: 50px;
     gap: 5px;
     max-height: 600px;
@@ -80,6 +96,7 @@
     width: fit-content;
     margin: 0 auto;
 }
+
 .seat-square {
     position: relative;
     border: 1px solid #ccc;
@@ -89,16 +106,20 @@
     background-color: white;
     font-size: 0.9rem;
 }
+
 .seat-square.occupied {
     background-color: #ddd;
     cursor: not-allowed;
 }
+
 .seat-square.selected {
     background-color: lightblue;
 }
+
 .seat-square.recommended {
     background-color: lightgreen;
 }
+
 .seat-square.extra-legroom::after {
     content: "XL";
     position: absolute;
@@ -110,6 +131,7 @@
     padding: 0 2px;
     border-radius: 2px;
 }
+
 .seat-square.exit-row::before {
     content: "EX";
     position: absolute;
@@ -121,6 +143,7 @@
     padding: 0 2px;
     border-radius: 2px;
 }
+
 .btn {
     background-color: #007bff;
     color: #fff;
@@ -130,6 +153,7 @@
     cursor: pointer;
     font-size: 14px;
 }
+
 .btn:hover {
     background-color: #0056b3;
 }
